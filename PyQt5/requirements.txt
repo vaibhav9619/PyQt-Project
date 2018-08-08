@@ -1,0 +1,5 @@
+Pyqt5
+autopep8
+bearlib
+opencv-python
+peewee
