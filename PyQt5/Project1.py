@@ -26,9 +26,11 @@ class win(QMainWindow):
         self.push1=QPushButton("-> Download <-",self)
         self.push1.setGeometry(515,300,110,30)
         self.push1.clicked.connect(self.down)
-        self.push2 = QPushButton("-> Thug Life <-",self)
+        self.push2 = QPushButton("-> MASK <-",self)
         self.push2.setGeometry(515,350,100,30)
-        self.push2.clicked.connect(self.thug)
+        # self.push2.clicked.connect(self.thug)
+        self.push2.clicked.connect(self.filter)
+        self.dod=Thuggmask(self)
         self.push3 = QPushButton("-> Chat Bot <-",self)
         self.push3.setGeometry(515,400,110,30)
         self.push4 = QPushButton("-> Calculator <-",self)
@@ -240,31 +242,32 @@ class win(QMainWindow):
         nav = QToolBar("Navigation")
         nav.setIconSize(QSize(20, 20))
         self.addToolBar(nav)
-    def thug(self):
-        maskPath = "mask.png"
-        mask = Image.open(maskPath)
-        detect = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
-
-        def Thug_mask(image):
-            grey = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-            faces = detect.detectMultiScale(grey, 2, 5)
-            back = Image.fromarray(image)
-            for (x, y, w, h) in faces:
-                resixe = mask.resize((w, h), Image.ANTIALIAS)
-                offset = (x, y)
-                back.paste(resixe, offset, mask=resixe)
-            return np.asarray(back)
-
-        cap = cv2.VideoCapture(cv2.CAP_ANY)
-        while True:
-            ret, img = cap.read()
-            if ret:
-                cv2.imshow("Live", Thug_mask(img))
-                if cv2.waitKey(1) == 27:
-                    break
-        cap.release()
-        cv2.destroyAllWindows()
-
+    # def thug(self):
+    #     maskPath = "mask.png"
+    #     mask = Image.open(maskPath)
+    #     detect = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
+    #
+    #     def Thug_mask(image):
+    #         grey = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    #         faces = detect.detectMultiScale(grey, 2, 5)
+    #         back = Image.fromarray(image)
+    #         for (x, y, w, h) in faces:
+    #             resixe = mask.resize((w, h), Image.ANTIALIAS)
+    #             offset = (x, y)
+    #             back.paste(resixe, offset, mask=resixe)
+    #         return np.asarray(back)
+    #
+    #     cap = cv2.VideoCapture(cv2.CAP_ANY)
+    #     while True:
+    #         ret, img = cap.read()
+    #         if ret:
+    #             cv2.imshow("Live", Thug_mask(img))
+    #             if cv2.waitKey(1) == 27:
+    #                 break
+    #     cap.release()
+    #     cv2.destroyAllWindows()
+    def filter(self):
+        self.dod.show()
 
 class second(QMainWindow):
     def __init__(self,parent=None):
@@ -452,6 +455,115 @@ class calcu(QMainWindow):
         num1=int(self.line.text())
         num2=int(self.line1.text())
         self.line2.setText(str(num1%num2))
+class Thuggmask(QMainWindow):
+    def __init__(self,parent=None):
+        super().__init__(parent)
+        self.tit="Thug Life"
+        self.top = 100
+        self.bot = 80
+        self.wid = 1000
+        self.hei = 650
+        self.thug()
+    def thug(self):
+        self.lab=QLabel("<h1>*MASKS  FOR  YOU*</h1>",self)
+        self.lab.setGeometry(350,10,550,100)
+        self.push1=QPushButton("Thug Life",self)
+        self.push1.setGeometry(250,170,150,25)
+        self.push1.clicked.connect(self.thugg)
+        self.la1=QLabel(self)
+        self.la1.setPixmap(QPixmap("mask.png"))
+        self.la1.setGeometry(50,50,200,300)
+
+        self.push2 = QPushButton("Dog", self)
+        self.push2.setGeometry(750, 170, 150, 25)
+        self.push2.clicked.connect(self.dog)
+        self.la2 = QLabel(self)
+        self.la2.setPixmap(QPixmap("dog1.png"))
+        self.la2.setGeometry(450,-40, 350, 550)
+
+        self.push3 = QPushButton("Modi JI", self)
+        self.push3.setGeometry(320, 480, 150, 25)
+        self.push3.clicked.connect(self.Modi)
+        self.la3 = QLabel(self)
+        self.la3.setPixmap(QPixmap("modo.png"))
+        self.la3.setGeometry(50, 250, 300, 550)
+
+        self.setWindowTitle(self.tit)
+        self.setGeometry(self.top,self.bot,self.wid,self.hei)
+    def thugg(self):
+        maskPath = "mask.png"
+        mask = Image.open(maskPath)
+        detect = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
+
+        def Thug_mask(image):
+            grey = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+            faces = detect.detectMultiScale(grey, 2, 5)
+            back = Image.fromarray(image)
+            for (x, y, w, h) in faces:
+                resixe = mask.resize((w, h), Image.ANTIALIAS)
+                offset = (x, y)
+                back.paste(resixe, offset, mask=resixe)
+            return np.asarray(back)
+
+        cap = cv2.VideoCapture(cv2.CAP_ANY)
+        while True:
+            ret, img = cap.read()
+            if ret:
+                cv2.imshow("Live", Thug_mask(img))
+                if cv2.waitKey(1) == 27:
+                    break
+        cap.release()
+        cv2.destroyAllWindows()
+    def dog(self):
+        maskPath = "do.png"
+        mask = Image.open(maskPath)
+        detect = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
+
+        def Thug_mask(image):
+            grey = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+            faces = detect.detectMultiScale(grey, 2, 5)
+            back = Image.fromarray(image)
+            for (x, y, w, h) in faces:
+                resixe = mask.resize((w, h), Image.ANTIALIAS)
+                offset = (x, y)
+                back.paste(resixe, offset, mask=resixe)
+            return np.asarray(back)
+
+        cap = cv2.VideoCapture(cv2.CAP_ANY)
+        while True:
+            ret, img = cap.read()
+            if ret:
+                cv2.imshow("Live", Thug_mask(img))
+                if cv2.waitKey(1) == 27:
+                    break
+        cap.release()
+        cv2.destroyAllWindows()
+    def Modi(self):
+        maskPath = "modi.png"
+        mask = Image.open(maskPath)
+        detect = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
+
+        def Thug_mask(image):
+            grey = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+            faces = detect.detectMultiScale(grey, 2, 5)
+            back = Image.fromarray(image)
+            for (x, y, w, h) in faces:
+                resixe = mask.resize((w, h), Image.ANTIALIAS)
+                offset = (x, y)
+                back.paste(resixe, offset, mask=resixe)
+            return np.asarray(back)
+
+        cap = cv2.VideoCapture(cv2.CAP_ANY)
+        while True:
+            ret, img = cap.read()
+            if ret:
+                cv2.imshow("Live", Thug_mask(img))
+                if cv2.waitKey(1) == 27:
+                    break
+        cap.release()
+        cv2.destroyAllWindows()
+
+
 
 # class Base(Model):
 #     class Meta:
