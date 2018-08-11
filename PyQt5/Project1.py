@@ -1,4 +1,6 @@
 from PyQt5 import QtGui
+from PIL import Image
+import numpy as np
 from PyQt5.QtCore import *
 from urllib import request
 from PyQt5.QtGui import QPixmap, QDesktopServices
@@ -26,6 +28,7 @@ class win(QMainWindow):
         self.push1.clicked.connect(self.down)
         self.push2 = QPushButton("-> Thug Life <-",self)
         self.push2.setGeometry(515,350,100,30)
+        self.push2.clicked.connect(self.thug)
         self.push3 = QPushButton("-> Chat Bot <-",self)
         self.push3.setGeometry(515,400,110,30)
         self.push4 = QPushButton("-> Calculator <-",self)
@@ -147,12 +150,24 @@ class win(QMainWindow):
         if msg == QMessageBox.Yes:
             self.close()
     def cam(self):
-        img=cv2.VideoCapture(0)
+        img = cv2.VideoCapture(0)
+        four = cv2.VideoWriter_fourcc(*'XVID')
+        out = cv2.VideoWriter('output.avi', four, 20.0, (640, 480))
         while True:
-            ret,cap=img.read()
-            cv2.imshow("camera",cap)
-            cv2.waitKey(1)
+            ret, cap = img.read()
+            grey = cv2.cvtColor(cap, cv2.COLOR_BGR2GRAY)
+            cv2.imshow("dfd", cap)
+            cv2.imshow("asa", grey)
+            if cv2.waitKey(1)==27:
+                break
+        out.release()
         img.release()
+        # img=cv2.VideoCapture(0)
+        # while True:
+        #     ret,cap=img.read()
+        #     cv2.imshow("camera",cap)
+        #     cv2.waitKey(1)
+        # img.release()
     def capture(self):
         # count=0
         img1=cv2.VideoCapture(0)
@@ -225,6 +240,30 @@ class win(QMainWindow):
         nav = QToolBar("Navigation")
         nav.setIconSize(QSize(20, 20))
         self.addToolBar(nav)
+    def thug(self):
+        maskPath = "mask.png"
+        mask = Image.open(maskPath)
+        detect = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
+
+        def Thug_mask(image):
+            grey = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+            faces = detect.detectMultiScale(grey, 2, 5)
+            back = Image.fromarray(image)
+            for (x, y, w, h) in faces:
+                resixe = mask.resize((w, h), Image.ANTIALIAS)
+                offset = (x, y)
+                back.paste(resixe, offset, mask=resixe)
+            return np.asarray(back)
+
+        cap = cv2.VideoCapture(cv2.CAP_ANY)
+        while True:
+            ret, img = cap.read()
+            if ret:
+                cv2.imshow("Live", Thug_mask(img))
+                if cv2.waitKey(1) == 27:
+                    break
+        cap.release()
+        cv2.destroyAllWindows()
 
 
 class second(QMainWindow):
