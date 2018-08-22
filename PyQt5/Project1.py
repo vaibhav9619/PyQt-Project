@@ -141,6 +141,9 @@ class win(QMainWindow):
         close=QAction("Close Window",self)
         close.triggered.connect(self.sure)
         file.addAction(close)
+
+
+
         self.setWindowTitle(self.tit)
         self.setGeometry(self.top, self.bot, self.wid, self.hei)
         self.show()
@@ -183,8 +186,10 @@ class win(QMainWindow):
         cv2.imwrite("Images/" + "images.jpeg" , cap)
         cv2.waitKey(0)
     def but(self):
+        self.hide()
         self.dialog.show()
     def jojo(self):
+        self.hide()
         self.d1.show()
     def down(self):
         url=""
@@ -193,6 +198,7 @@ class win(QMainWindow):
             fname="media/"+str(i)+url.split("/")[-1]
             Thread(target=lambda:request.urlretrieve(url,"abc.mp4")).start()
     def calc(self):
+        self.hide()
         self.dia2.show()
     def detect(self):
         eyes=cv2.CascadeClassifier("haarcascade_eye.xml")
@@ -251,6 +257,7 @@ class win(QMainWindow):
         self.addToolBar(nav)
 
     def filter(self):
+        self.hide()
         self.dod.show()
 
 class second(QMainWindow):
@@ -292,9 +299,9 @@ class second(QMainWindow):
         self.addToolBar(noni)
         back=QAction(QIcon(os.path.join('back.png')),"back",self)
         back.setStatusTip("back to Previous Page")
-        back.triggered.connect(self.brow.back)
+        back.triggered.connect(self.back1)
         noni.addAction(back)
-        forward = QAction(QIcon(os.path.join('forward.png')), "back", self)
+        forward = QAction(QIcon(os.path.join('forward.png')), "Forward", self)
         forward.setStatusTip("back to Previous Page")
         forward.triggered.connect(self.brow.forward)
         noni.addAction(forward)
@@ -334,8 +341,10 @@ class second(QMainWindow):
                 QMessageBox.about(self, "Login", "Incorrect Password")
             else:
                 QMessageBox.about(self, "Login", "No Such Id is Created . First Create your ID")
-    # def back1(self):
-    #     self.hide()
+    def back1(self):
+        self.hide()
+        self.x=win()
+        self.x.show()
 
 # self.show()
 class third(QMainWindow):
@@ -379,6 +388,19 @@ class third(QMainWindow):
         self.lh.linkActivated.connect(self.jija)
         self.lh.setText('<a href="http://gmail.com/">Already have acccount??</a>')
         self.dogla=second(self)
+        self.brow=QWebEngineView()
+
+        noni = QToolBar("navigation")
+        noni.setIconSize(QSize(20, 20))
+        self.addToolBar(noni)
+        back = QAction(QIcon(os.path.join('back.png')), "back", self)
+        back.setStatusTip("back to Previous Page")
+        back.triggered.connect(self.bac)
+        noni.addAction(back)
+        forward = QAction(QIcon(os.path.join('forward.png')), "Forward", self)
+        forward.setStatusTip("back to Previous Page")
+        forward.triggered.connect(self.brow.forward)
+        noni.addAction(forward)
 
 
         self.setWindowTitle(self.tit)
@@ -397,6 +419,11 @@ class third(QMainWindow):
 
         else:
             QMessageBox.about(self,"Error","Password Not matched")
+    def bac(self):
+        self.hide()
+        self.x = win()
+        self.x.show()
+
 
 class calcu(QMainWindow):
     def __init__(self,parent=None):
@@ -471,6 +498,19 @@ class calcu(QMainWindow):
         # if self.line.isEnabled():
         #     if self.num0.isEnabled():
         #         self.line.text()==0
+        self.brow = QWebEngineView()
+
+        noni = QToolBar("navigation")
+        noni.setIconSize(QSize(20, 20))
+        self.addToolBar(noni)
+        back = QAction(QIcon(os.path.join('back.png')), "back", self)
+        back.setStatusTip("back to Previous Page")
+        back.triggered.connect(self.bac1)
+        noni.addAction(back)
+        forward = QAction(QIcon(os.path.join('forward.png')), "Forward", self)
+        forward.setStatusTip("back to Previous Page")
+        forward.triggered.connect(self.brow.forward)
+        noni.addAction(forward)
     def addition(self):
         num1=int(self.line.text())
         num2=int(self.line1.text())
@@ -495,6 +535,10 @@ class calcu(QMainWindow):
         num1=int(self.line.text())
         num2=int(self.line1.text())
         self.line2.setText(str(num1%num2))
+    def bac1(self):
+        self.hide()
+        self.x1=win()
+        self.x1.show()
 class Thuggmask(QMainWindow):
     def __init__(self,parent=None):
         super().__init__(parent)
@@ -527,6 +571,20 @@ class Thuggmask(QMainWindow):
         self.la3 = QLabel(self)
         self.la3.setPixmap(QPixmap("modo.png"))
         self.la3.setGeometry(50, 250, 300, 550)
+
+        self.brow = QWebEngineView()
+
+        noni = QToolBar("navigation")
+        noni.setIconSize(QSize(20, 20))
+        self.addToolBar(noni)
+        back = QAction(QIcon(os.path.join('back.png')), "back", self)
+        back.setStatusTip("back to Previous Page")
+        back.triggered.connect(self.bac2)
+        noni.addAction(back)
+        forward = QAction(QIcon(os.path.join('forward.png')), "Forward", self)
+        forward.setStatusTip("back to Previous Page")
+        forward.triggered.connect(self.brow.forward)
+        noni.addAction(forward)
 
         self.setWindowTitle(self.tit)
         self.setGeometry(self.top,self.bot,self.wid,self.hei)
@@ -602,6 +660,10 @@ class Thuggmask(QMainWindow):
                     break
         cap.release()
         cv2.destroyAllWindows()
+    def bac2(self):
+        self.hide()
+        self.m=win()
+        self.m.show()
 
 
 class Log(Base):
