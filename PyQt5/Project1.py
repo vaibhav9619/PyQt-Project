@@ -1,15 +1,25 @@
-from PyQt5 import QtGui
+import os
+
+from PyQt5 import QtGui,QtWidgets
 from PIL import Image
 import numpy as np
 from PyQt5.QtCore import *
 from urllib import request
-from PyQt5.QtGui import QPixmap, QDesktopServices
+from PyQt5.QtGui import QPixmap, QDesktopServices, QIcon
 from threading import Thread
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import QApplication,QMainWindow,QFileDialog,QTextEdit,QAction,QMessageBox,QLabel,QPushButton,QToolBar,QLineEdit
 import cv2
+from  PyQt5.QtSql import *
+import sqlite3
 from peewee import SqliteDatabase,Model,CharField,PrimaryKeyField
-# db=SqliteDatabase("login.db")
+db=SqliteDatabase("bhag.db")
+kk=sqlite3.connect("bhag.db")
+
+
+class Base(Model):
+    class Meta:
+        database=db
 class win(QMainWindow):
     def link(self, linkStr):
         QDesktopServices.openUrl(QUrl(linkStr))
@@ -111,12 +121,6 @@ class win(QMainWindow):
         self.nav.addSeparator()
         self.nav.addWidget(self.url)
 
-        
-
-
-
-
-
         label=QLabel("<h1>THE MASTER MIND</h1>",self)
         label.setGeometry(380,180,350,150)
         self.setWindowIcon(QtGui.QIcon('save.png'))
@@ -205,7 +209,10 @@ class win(QMainWindow):
                 for (x1,y1,w1,h1) in eye:
                     cv2.rectangle(cap,(x+x1,y+y1),(x+x1+w1,y+y1+h1),(0,0,255),4)
             cv2.imshow("Image",cap)
-            cv2.waitKey(1)
+            if cv2.waitKey(1)==27:
+                break
+            # cap.release()
+            # cv2.destroyAllWindows()
     def li(self):
         self.browser=QWebEngineView()
         self.browser.setUrl(QUrl("https://www.google.com/"))
@@ -242,30 +249,7 @@ class win(QMainWindow):
         nav = QToolBar("Navigation")
         nav.setIconSize(QSize(20, 20))
         self.addToolBar(nav)
-    # def thug(self):
-    #     maskPath = "mask.png"
-    #     mask = Image.open(maskPath)
-    #     detect = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
-    #
-    #     def Thug_mask(image):
-    #         grey = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-    #         faces = detect.detectMultiScale(grey, 2, 5)
-    #         back = Image.fromarray(image)
-    #         for (x, y, w, h) in faces:
-    #             resixe = mask.resize((w, h), Image.ANTIALIAS)
-    #             offset = (x, y)
-    #             back.paste(resixe, offset, mask=resixe)
-    #         return np.asarray(back)
-    #
-    #     cap = cv2.VideoCapture(cv2.CAP_ANY)
-    #     while True:
-    #         ret, img = cap.read()
-    #         if ret:
-    #             cv2.imshow("Live", Thug_mask(img))
-    #             if cv2.waitKey(1) == 27:
-    #                 break
-    #     cap.release()
-    #     cv2.destroyAllWindows()
+
     def filter(self):
         self.dod.show()
 
@@ -279,6 +263,7 @@ class second(QMainWindow):
         self.hei = 650
         self.new1()
     def new1(self):
+
         self.labeel=QLabel(self)
         self.labeel.setPixmap(QPixmap("login1.png"))
         self.labeel.setGeometry(350,120,200,200)
@@ -289,15 +274,30 @@ class second(QMainWindow):
         self.line2.setEchoMode(QLineEdit.Password)
         self.line2.setGeometry(380, 430, 220, 25)
         self.pushh1=QPushButton("Login",self)
-        self.pushh1.setGeometry(380,475,220,25)
+        self.pushh1.setGeometry(380,515,220,25)
+        self.pushh1.clicked.connect(self.con)
         self.labal=QLabel("Username / Email",self)
         self.labal.setGeometry(380,270,200,200)
         self.labal1 = QLabel("Password", self)
         self.labal1.setGeometry(380, 320, 200, 200)
         self.loble=QLabel("ok",self)
-        self.loble.setGeometry(380,490,150,50)
+        self.loble.setGeometry(400,555,150,50)
         # self.loble.linkActivated.connect(self.nop)
         self.loble.setText('<a href="http://gmail.com/">Create an account</a>')
+        self.brow = QWebEngineView()
+
+        # self.setGeometry(self.bro)
+        noni=QToolBar("navigation")
+        noni.setIconSize(QSize(20,20))
+        self.addToolBar(noni)
+        back=QAction(QIcon(os.path.join('back.png')),"back",self)
+        back.setStatusTip("back to Previous Page")
+        back.triggered.connect(self.brow.back)
+        noni.addAction(back)
+        forward = QAction(QIcon(os.path.join('forward.png')), "back", self)
+        forward.setStatusTip("back to Previous Page")
+        forward.triggered.connect(self.brow.forward)
+        noni.addAction(forward)
 
 
         # self.loble.setText()
@@ -305,11 +305,39 @@ class second(QMainWindow):
 
         self.setWindowTitle(self.tit)
         self.setGeometry(self.top, self.bot, self.wid, self.hei)
-    # def nop(self):
-        # self.di.show()
 
+    def con(self):
 
-        # self.show()
+        username=self.line1.text()
+        password=self.line2.text()
+        # if not db.open():
+        #     QMessageBox.critical("Cannot open database")
+        #     return False
+        # query=QSqlQuery()
+        curr=kk.cursor()
+        curr.execute("select * from log where username=? and password=?",(username,password))
+        curr1=kk.cursor()
+        curr1.execute("select * from log where username=?",(username,))
+        q=curr.fetchall()
+        q1=curr1.fetchall()
+        count = 0
+        count1=0
+        for row in q:
+             count+=1
+        for row in q1:
+            count1+=1
+
+        if count >0:
+            QMessageBox.about(self, "Login", "login Succesfully!!")
+        else:
+            if count1 >0:
+                QMessageBox.about(self, "Login", "Incorrect Password")
+            else:
+                QMessageBox.about(self, "Login", "No Such Id is Created . First Create your ID")
+    # def back1(self):
+    #     self.hide()
+
+# self.show()
 class third(QMainWindow):
     def __init__(self,parent=None):
         super().__init__(parent)
@@ -324,8 +352,8 @@ class third(QMainWindow):
         self.lo1=QLabel(self)
         self.lo1.setPixmap(QPixmap('login1.png'))
         self.lo1.setGeometry(350, 90, 200, 200)
-        self.line12 = QLineEdit(self)
-        self.line12.setGeometry(380, 320, 220, 25)
+        self.line11 = QLineEdit(self)
+        self.line11.setGeometry(380, 320, 220, 25)
         self.line12 = QLineEdit(self)
         self.line12.setGeometry(380, 370, 220, 25)
         self.line13 = QLineEdit(self)
@@ -339,12 +367,13 @@ class third(QMainWindow):
         self.labal.setGeometry(380, 210, 200, 200)
         self.labal1 = QLabel("Email", self)
         self.labal1.setGeometry(380, 260, 200, 200)
-        self.labal = QLabel("Password", self)
-        self.labal.setGeometry(380, 310, 200, 200)
-        self.labal1 = QLabel("Confirm Password", self)
-        self.labal1.setGeometry(380, 360, 200, 200)
+        self.labal2 = QLabel("Password", self)
+        self.labal2.setGeometry(380, 310, 200, 200)
+        self.labal3 = QLabel("Confirm Password", self)
+        self.labal3.setGeometry(380, 360, 200, 200)
         self.pushh1 = QPushButton("Sign-Up", self)
         self.pushh1.setGeometry(380, 520, 220, 25)
+        self.pushh1.clicked.connect(self.con3)
         self.lh=QLabel("hurr",self)
         self.lh.setGeometry(380,530,170,50)
         self.lh.linkActivated.connect(self.jija)
@@ -356,7 +385,18 @@ class third(QMainWindow):
         self.setGeometry(self.top, self.bot, self.wid, self.hei)
     def jija(self):
         self.dogla.show()
+    def con3(self):
 
+        username=self.line11.text()
+        email=self.line12.text()
+        password=self.line14.text()
+        confirm=self.line13.text()
+        if password==confirm:
+            QMessageBox.about(self, "Sign-Up", "Sign-Up Successfull!!")
+            Log.create(username=username,email=email,password=password)
+
+        else:
+            QMessageBox.about(self,"Error","Password Not matched")
 
 class calcu(QMainWindow):
     def __init__(self,parent=None):
@@ -564,11 +604,20 @@ class Thuggmask(QMainWindow):
         cv2.destroyAllWindows()
 
 
+class Log(Base):
+    id=PrimaryKeyField()
+    username=CharField()
+    email = CharField()
+    password=CharField()
+# class Log1(Base):
+#     id1 = PrimaryKeyField()
+#     username1 = CharField()
+#     email1=CharField()
+#     password1 = CharField()
 
-# class Base(Model):
-#     class Meta:
-#         database=db
-# class Log(Base):
+
+db.connect()
+db.create_tables([Log])
 app=QApplication([])
 wind=win()
 
